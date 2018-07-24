@@ -3,6 +3,7 @@ package com.yxdtyut.service.impl;
 import com.yxdtyut.beans.RequestHolder;
 import com.yxdtyut.common.CodeMsg;
 import com.yxdtyut.dao.SysDeptMapper;
+import com.yxdtyut.dao.SysUserMapper;
 import com.yxdtyut.exception.PermissionException;
 import com.yxdtyut.model.SysDept;
 import com.yxdtyut.param.SysDeptVo;
@@ -31,6 +32,9 @@ public class SysDeptServiceImpl implements SysDeptService {
 
     @Autowired
     private SysDeptMapper sysDeptMapper;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Override
     public int save(SysDeptVo sysDeptVo){
@@ -64,6 +68,22 @@ public class SysDeptServiceImpl implements SysDeptService {
         afterDept.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         afterDept.setOperateTime(new Date());
         updateDeptAndChildDept(beforeDept,afterDept);
+    }
+
+    @Override
+    public void deleteDept(int deptId) {
+        SysDept sysDept = sysDeptMapper.selectByPrimaryKey(deptId);
+        if (sysDept == null) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_DEPT_NOT_EXIST);
+        }
+        int count = sysDeptMapper.findSysDeptCountByParentId(deptId);
+        if (count > 0) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_DEPT_HAS_CHILD_DEPT);
+        }
+        if (sysUserMapper.findCountByDeptId(deptId) > 0) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_DEPT_HAS_USER);
+        }
+        sysDeptMapper.deleteByPrimaryKey(deptId);
     }
 
     /**

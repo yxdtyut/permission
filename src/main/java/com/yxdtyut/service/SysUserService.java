@@ -5,6 +5,8 @@ import com.yxdtyut.beans.PageResult;
 import com.yxdtyut.model.SysUser;
 import com.yxdtyut.param.SysUserVo;
 
+import java.util.List;
+
 /**
  * @Author : yangxudong
  * @Description :
@@ -19,4 +21,6 @@ public interface SysUserService {
     SysUser findSysUserByKeyWord(String username);
 
     PageResult getPageResultByDeptId(int deptId, PageQuery page);
+
+    List<SysUser> findAll();
 }

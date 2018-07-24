@@ -94,6 +94,11 @@ public class SysUserServiceImpl implements SysUserService {
         return PageResult.<SysUser>builder().build();
     }
 
+    @Override
+    public List<SysUser> findAll() {
+        return sysUserMapper.findAll();
+    }
+
     private boolean checkEmailExist(String mail, Integer id) {
         return sysUserMapper.findCountByEmail(mail,id) > 0;
     }

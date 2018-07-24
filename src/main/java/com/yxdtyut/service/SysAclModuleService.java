@@ -10,4 +10,6 @@ public interface SysAclModuleService {
     int save(SysAclModuleVo sysAclModuleVo);
 
     void update(SysAclModuleVo sysAclModuleVo);
+
+    void deleteAclModule(int aclModuleId);
 }

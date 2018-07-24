@@ -5,9 +5,11 @@ import com.yxdtyut.dto.DeptLevelDTO;
 import com.yxdtyut.param.SysDeptVo;
 import com.yxdtyut.service.SysDeptService;
 import com.yxdtyut.service.SysTreeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,6 +22,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/sys/dept")
+@Slf4j
 public class SysDeptController {
 
     @Autowired
@@ -52,5 +55,14 @@ public class SysDeptController {
     public Result treeDept() {
         List<DeptLevelDTO> deptLevelDTOS = sysTreeService.deptTree();
         return Result.success(deptLevelDTOS);
+    }
+
+    @RequestMapping("/delete.json")
+    @ResponseBody
+    public Result deleteDept(@RequestParam int id) {
+        log.info("删除部门，id:{}",id);
+        sysDeptService.deleteDept(id);
+        log.info("删除部门完毕，id:{}",id);
+        return Result.success(id);
     }
 }

@@ -2,6 +2,7 @@ package com.yxdtyut.service.impl;
 
 import com.yxdtyut.beans.RequestHolder;
 import com.yxdtyut.common.CodeMsg;
+import com.yxdtyut.dao.SysAclMapper;
 import com.yxdtyut.dao.SysAclModuleMapper;
 import com.yxdtyut.exception.PermissionException;
 import com.yxdtyut.model.SysAclModule;
@@ -29,6 +30,9 @@ public class SysAclModuleServiceImpl implements SysAclModuleService {
 
     @Autowired
     private SysAclModuleMapper sysAclModuleMapper;
+
+    @Autowired
+    private SysAclMapper sysAclMapper;
 
     @Override
     public int save(SysAclModuleVo sysAclModuleVo) {
@@ -62,6 +66,22 @@ public class SysAclModuleServiceImpl implements SysAclModuleService {
         after.setOperateIp(IpUtil.getRemoteIp(RequestHolder.getCurrentRequest()));
         after.setOperateTime(new Date());
         updateAclModuleAndChildAclModule(before,after);
+    }
+
+    @Override
+    public void deleteAclModule(int aclModuleId) {
+        SysAclModule sysAclModule = sysAclModuleMapper.selectByPrimaryKey(aclModuleId);
+        if (sysAclModule == null) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_ACL_MODULE_NOT_EXIST);
+        }
+        int count = sysAclModuleMapper.findAclModuleCountByParentId(aclModuleId);
+        if (count > 0) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_ACL_MODULE_HAS_CHILD_ACLMODULE);
+        }
+        if (sysAclMapper.getCountByAclModuleId(aclModuleId) > 0) {
+            throw new PermissionException(CodeMsg.WAIT_DELETE_ACL_MODULE_HAS_ACL);
+        }
+        sysAclModuleMapper.deleteByPrimaryKey(aclModuleId);
     }
 
     @Transactional

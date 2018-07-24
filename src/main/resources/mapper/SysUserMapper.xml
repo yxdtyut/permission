@@ -203,4 +203,21 @@
     limit #{page.offset}, #{page.pageSize}
   </select>
 
+  <select id="findSysUserListByUserIds" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from sys_user
+    WHERE
+    id IN
+    <foreach collection="userIdList" item="userId" separator="," open="(" close=")" >
+      #{userId}
+    </foreach>
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from sys_user
+  </select>
+
 </mapper>

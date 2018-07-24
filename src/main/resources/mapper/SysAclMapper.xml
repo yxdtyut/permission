@@ -200,4 +200,27 @@
     limit #{page.offset},#{page.pageSize}
   </select>
 
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_acl
+  </select>
+
+  <select id="findSysAclListByIdList" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from sys_acl
+    WHERE id IN
+    <foreach collection="aclIds" item="aclId" open="(" close=")" separator=",">
+      #{aclId}
+    </foreach>
+  </select>
+
+  <select id="getByUrl" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_acl
+    WHERE url = #{url}
+  </select>
+
 </mapper>

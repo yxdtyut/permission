@@ -12,4 +12,6 @@ public interface SysDeptService {
     public int save(SysDeptVo sysDeptVo);
 
     void update(SysDeptVo sysDeptVo);
+
+    void deleteDept(int deptId);
 }
